@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Flippity Spelling Words</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2>Practice Mode (Enhanced)</h2>
+    <div id="progress">Word 1 of 3300</div>
+    <div id="word-area">[Word appears here]</div>
+    <button onclick="goBack()">← Back</button>
+    <button onclick="goNext()">Next →</button>
+
+    <script>
+        let words = []; // this will be loaded dynamically
+        let currentIndex = localStorage.getItem("practiceIndex") || 0;
+
+        function updateDisplay() {
+            document.getElementById('word-area').innerText = words[currentIndex] || "Done!";
+            document.getElementById('progress').innerText = `Word ${+currentIndex + 1} of ${words.length}`;
+        }
+
+        function goNext() {
+            if (currentIndex < words.length - 1) {
+                currentIndex++;
+                localStorage.setItem("practiceIndex", currentIndex);
+                updateDisplay();
+            }
+        }
+
+        function goBack() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                localStorage.setItem("practiceIndex", currentIndex);
+                updateDisplay();
+            }
+        }
+
+        // Simulate loading words (replace with Flippity loading logic)
+        fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTEU1RGe5jg6rUWnI62-d1HbxiqO7aSICq73cfgFqUe8OhMhUXoY4KqsMZI4_EC_Uv0fDIXz0-D063O/pub?output=csv")
+            .then(res => res.text())
+            .then(data => {
+                words = data.split("\n").map(row => row.split(",")[0]).slice(1); // basic parser
+                updateDisplay();
+            });
+    </script>
+</body>
+</html>
